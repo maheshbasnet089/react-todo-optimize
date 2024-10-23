@@ -1,4 +1,4 @@
-import { ChangeEvent, memo, useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useMemo, useState } from "react"
 import List,{Todo} from "./List"
 
 
@@ -9,6 +9,15 @@ const initialTodos: Todo[] = [
 function App() {
   const [todoList,setTodoList] = useState<Todo[]>(initialTodos)
   const [task,setTask] = useState<string>("")
+  const [term,setTerm] = useState<string>("")
+  const handleSearch = ()=>{
+    setTerm(task)
+  }
+  const filteredTodoList = useMemo(()=>todoList.filter((todo:Todo)=>{
+    console.log("Filtering..")
+    return todo.task.toLowerCase().includes(term.toLowerCase())
+  }),[term,todoList])
+
   useEffect(()=>{
     console.log("Rendering <App/>")
   })
@@ -20,13 +29,16 @@ function App() {
     setTodoList([...todoList,newTodo])
     setTask("")
   }
+
+
   return (
     <>
       <input type="text" value={task} onChange={(e:ChangeEvent<HTMLInputElement>)=>setTask(e.target.value)} />
       <button onClick={handleCreate}>Create</button>
-      <List todoList={todoList} />
+      <button onClick={handleSearch}>Search</button>
+      <List todoList={filteredTodoList} />
     </>
   )
 }
 
-export default memo(App)
+export default  App
