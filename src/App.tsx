@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useMemo, useState } from "react"
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react"
 import List,{Todo} from "./List"
 
 
@@ -30,13 +30,16 @@ function App() {
     setTask("")
   }
 
-
+  const handleDelete = useCallback(()=>(taskId : number)=>{
+    const newTodoList = todoList.filter((todo:Todo)=>todo.id !== taskId)
+    setTodoList(newTodoList)
+  },[todoList])
   return (
     <>
       <input type="text" value={task} onChange={(e:ChangeEvent<HTMLInputElement>)=>setTask(e.target.value)} />
       <button onClick={handleCreate}>Create</button>
       <button onClick={handleSearch}>Search</button>
-      <List todoList={filteredTodoList} />
+      <List todoList={filteredTodoList} handleDelete={handleDelete} />
     </>
   )
 }
